@@ -23,6 +23,7 @@ import { KpiCard } from "@/components/KpiCard";
 import { CumulativeChart } from "@/components/CumulativeChart";
 import { CalculationBreakdown } from "@/components/CalculationBreakdown";
 import { Pill } from "@/components/Pill";
+import { NumberInput } from "@/components/NumberInput";
 
 /** これを超えるROI回収期間は、単体提案ではなく他業務とのバンドル提案に切り替える */
 const ROI_BUNDLE_THRESHOLD_MONTHS = 12;
@@ -157,19 +158,11 @@ export default function HomePage() {
                     onChange={(e) => setHeadcount(Number(e.target.value))}
                     className="flex-1 accent-navy-700"
                   />
-                  <input
-                    type="number"
+                  <NumberInput
+                    value={headcount}
+                    onCommit={setHeadcount}
                     min={INPUT_RANGES.headcount.min}
                     max={INPUT_RANGES.headcount.max}
-                    value={headcount}
-                    onChange={(e) =>
-                      setHeadcount(
-                        Math.min(
-                          INPUT_RANGES.headcount.max,
-                          Math.max(INPUT_RANGES.headcount.min, Number(e.target.value) || 0),
-                        ),
-                      )
-                    }
                     className="w-20 rounded-lg border border-surface-border px-2 py-1.5 text-right text-base tabular-nums"
                   />
                   <span className="text-base text-ink-muted">人</span>
@@ -191,20 +184,12 @@ export default function HomePage() {
                     onChange={(e) => setCasesPerDay(Number(e.target.value))}
                     className="flex-1 accent-navy-700 disabled:opacity-40"
                   />
-                  <input
-                    type="number"
+                  <NumberInput
+                    value={casesPerDay}
+                    onCommit={setCasesPerDay}
                     min={INPUT_RANGES.casesPerDay.min}
                     max={INPUT_RANGES.casesPerDay.max}
-                    value={casesPerDay}
                     disabled={!processId}
-                    onChange={(e) =>
-                      setCasesPerDay(
-                        Math.min(
-                          INPUT_RANGES.casesPerDay.max,
-                          Math.max(INPUT_RANGES.casesPerDay.min, Number(e.target.value) || 0),
-                        ),
-                      )
-                    }
                     className="w-24 rounded-lg border border-surface-border px-2 py-1.5 text-right text-base tabular-nums disabled:bg-surface-sunken"
                   />
                   <span className="text-base text-ink-muted">件/日</span>
@@ -234,20 +219,12 @@ export default function HomePage() {
                     onChange={(e) => setMinutesPerCase(Number(e.target.value))}
                     className="flex-1 accent-navy-700 disabled:opacity-40"
                   />
-                  <input
-                    type="number"
+                  <NumberInput
+                    value={minutesPerCase}
+                    onCommit={setMinutesPerCase}
                     min={INPUT_RANGES.minutesPerCase.min}
                     max={INPUT_RANGES.minutesPerCase.max}
-                    value={minutesPerCase}
                     disabled={!processId}
-                    onChange={(e) =>
-                      setMinutesPerCase(
-                        Math.min(
-                          INPUT_RANGES.minutesPerCase.max,
-                          Math.max(INPUT_RANGES.minutesPerCase.min, Number(e.target.value) || 0),
-                        ),
-                      )
-                    }
                     className="w-20 rounded-lg border border-surface-border px-2 py-1.5 text-right text-base tabular-nums disabled:bg-surface-sunken"
                   />
                   <span className="text-base text-ink-muted">分</span>

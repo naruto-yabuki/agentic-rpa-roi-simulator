@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PROCESS_BENCHMARKS, PROCESS_ORDER, SETTINGS_RANGES } from "@/lib/processBenchmarks";
 import { useSettings } from "@/lib/settings-context";
 import { formatYenPerHour } from "@/lib/format";
+import { NumberInput } from "@/components/NumberInput";
 
 function yenToMan(yen: number): number {
   return Math.round(yen / 10_000);
@@ -49,19 +50,12 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-base font-medium text-ink">平均年収（万円/年）</label>
-              <input
-                type="number"
+              <NumberInput
+                value={yenToMan(settings.averageAnnualSalaryYen)}
+                onCommit={(man) => updateSettings({ averageAnnualSalaryYen: manToYen(man) })}
                 min={yenToMan(SETTINGS_RANGES.averageAnnualSalaryYen.min)}
                 max={yenToMan(SETTINGS_RANGES.averageAnnualSalaryYen.max)}
                 step={10}
-                value={yenToMan(settings.averageAnnualSalaryYen)}
-                onChange={(e) => {
-                  const man = Math.min(
-                    yenToMan(SETTINGS_RANGES.averageAnnualSalaryYen.max),
-                    Math.max(yenToMan(SETTINGS_RANGES.averageAnnualSalaryYen.min), Number(e.target.value) || 0),
-                  );
-                  updateSettings({ averageAnnualSalaryYen: manToYen(man) });
-                }}
                 className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
               <p className="mt-1 text-sm text-ink-muted">対象業務担当者の平均年収。既定 600万円</p>
@@ -69,19 +63,12 @@ export default function SettingsPage() {
 
             <div>
               <label className="block text-base font-medium text-ink">年間所定労働時間（時間/年）</label>
-              <input
-                type="number"
+              <NumberInput
+                value={settings.annualWorkingHours}
+                onCommit={(v) => updateSettings({ annualWorkingHours: v })}
                 min={SETTINGS_RANGES.annualWorkingHours.min}
                 max={SETTINGS_RANGES.annualWorkingHours.max}
                 step={10}
-                value={settings.annualWorkingHours}
-                onChange={(e) => {
-                  const v = Math.min(
-                    SETTINGS_RANGES.annualWorkingHours.max,
-                    Math.max(SETTINGS_RANGES.annualWorkingHours.min, Number(e.target.value) || 0),
-                  );
-                  updateSettings({ annualWorkingHours: v });
-                }}
                 className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
               <p className="mt-1 text-sm text-ink-muted">
@@ -104,35 +91,21 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-base font-medium text-ink">月間稼働日数（日）</label>
-              <input
-                type="number"
+              <NumberInput
+                value={settings.workingDaysPerMonth}
+                onCommit={(v) => updateSettings({ workingDaysPerMonth: v })}
                 min={SETTINGS_RANGES.workingDaysPerMonth.min}
                 max={SETTINGS_RANGES.workingDaysPerMonth.max}
-                value={settings.workingDaysPerMonth}
-                onChange={(e) => {
-                  const v = Math.min(
-                    SETTINGS_RANGES.workingDaysPerMonth.max,
-                    Math.max(SETTINGS_RANGES.workingDaysPerMonth.min, Number(e.target.value) || 0),
-                  );
-                  updateSettings({ workingDaysPerMonth: v });
-                }}
                 className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
             </div>
             <div>
               <label className="block text-base font-medium text-ink">1日の所定労働時間（時間）</label>
-              <input
-                type="number"
+              <NumberInput
+                value={settings.dailyWorkingHours}
+                onCommit={(v) => updateSettings({ dailyWorkingHours: v })}
                 min={SETTINGS_RANGES.dailyWorkingHours.min}
                 max={SETTINGS_RANGES.dailyWorkingHours.max}
-                value={settings.dailyWorkingHours}
-                onChange={(e) => {
-                  const v = Math.min(
-                    SETTINGS_RANGES.dailyWorkingHours.max,
-                    Math.max(SETTINGS_RANGES.dailyWorkingHours.min, Number(e.target.value) || 0),
-                  );
-                  updateSettings({ dailyWorkingHours: v });
-                }}
                 className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
               <p className="mt-1 text-sm text-ink-muted">物理上限（キャップ）計算に使用</p>
@@ -157,52 +130,29 @@ export default function SettingsPage() {
                     <tr key={id} className="border-b border-surface-border last:border-0">
                       <td className="py-2 pr-2 font-medium text-ink">{PROCESS_BENCHMARKS[id].label}</td>
                       <td className="px-2 py-2">
-                        <input
-                          type="number"
+                        <NumberInput
+                          value={row.minutesPerCase}
+                          onCommit={(v) => updateProcessSetting(id, { minutesPerCase: v })}
                           min={SETTINGS_RANGES.minutesPerCase.min}
                           max={SETTINGS_RANGES.minutesPerCase.max}
-                          value={row.minutesPerCase}
-                          onChange={(e) =>
-                            updateProcessSetting(id, {
-                              minutesPerCase: Math.min(
-                                SETTINGS_RANGES.minutesPerCase.max,
-                                Math.max(SETTINGS_RANGES.minutesPerCase.min, Number(e.target.value) || 0),
-                              ),
-                            })
-                          }
                           className="w-24 rounded-lg border border-surface-border px-2 py-1.5 text-right tabular-nums"
                         />
                       </td>
                       <td className="px-2 py-2">
-                        <input
-                          type="number"
+                        <NumberInput
+                          value={Math.round(row.automationRate * 100)}
+                          onCommit={(pct) => updateProcessSetting(id, { automationRate: pct / 100 })}
                           min={Math.round(SETTINGS_RANGES.automationRate.min * 100)}
                           max={Math.round(SETTINGS_RANGES.automationRate.max * 100)}
-                          value={Math.round(row.automationRate * 100)}
-                          onChange={(e) => {
-                            const pct = Math.min(
-                              Math.round(SETTINGS_RANGES.automationRate.max * 100),
-                              Math.max(Math.round(SETTINGS_RANGES.automationRate.min * 100), Number(e.target.value) || 0),
-                            );
-                            updateProcessSetting(id, { automationRate: pct / 100 });
-                          }}
                           className="w-20 rounded-lg border border-surface-border px-2 py-1.5 text-right tabular-nums"
                         />
                       </td>
                       <td className="px-2 py-2">
-                        <input
-                          type="number"
+                        <NumberInput
+                          value={row.casesPerDayDefault}
+                          onCommit={(v) => updateProcessSetting(id, { casesPerDayDefault: v })}
                           min={SETTINGS_RANGES.casesPerDayDefault.min}
                           max={SETTINGS_RANGES.casesPerDayDefault.max}
-                          value={row.casesPerDayDefault}
-                          onChange={(e) =>
-                            updateProcessSetting(id, {
-                              casesPerDayDefault: Math.min(
-                                SETTINGS_RANGES.casesPerDayDefault.max,
-                                Math.max(SETTINGS_RANGES.casesPerDayDefault.min, Number(e.target.value) || 0),
-                              ),
-                            })
-                          }
                           className="w-24 rounded-lg border border-surface-border px-2 py-1.5 text-right tabular-nums"
                         />
                       </td>
@@ -223,35 +173,21 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="block text-base font-medium text-ink">初期投資（万円）</label>
-              <input
-                type="number"
+              <NumberInput
+                value={yenToMan(settings.initialInvestmentYen)}
+                onCommit={(man) => updateSettings({ initialInvestmentYen: manToYen(man) })}
                 min={yenToMan(SETTINGS_RANGES.initialInvestmentYen.min)}
                 max={yenToMan(SETTINGS_RANGES.initialInvestmentYen.max)}
-                value={yenToMan(settings.initialInvestmentYen)}
-                onChange={(e) => {
-                  const man = Math.min(
-                    yenToMan(SETTINGS_RANGES.initialInvestmentYen.max),
-                    Math.max(yenToMan(SETTINGS_RANGES.initialInvestmentYen.min), Number(e.target.value) || 0),
-                  );
-                  updateSettings({ initialInvestmentYen: manToYen(man) });
-                }}
                 className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
             </div>
             <div>
               <label className="block text-base font-medium text-ink">月額運用費（万円/月）</label>
-              <input
-                type="number"
+              <NumberInput
+                value={yenToMan(settings.monthlyOperatingCostYen)}
+                onCommit={(man) => updateSettings({ monthlyOperatingCostYen: manToYen(man) })}
                 min={yenToMan(SETTINGS_RANGES.monthlyOperatingCostYen.min)}
                 max={yenToMan(SETTINGS_RANGES.monthlyOperatingCostYen.max)}
-                value={yenToMan(settings.monthlyOperatingCostYen)}
-                onChange={(e) => {
-                  const man = Math.min(
-                    yenToMan(SETTINGS_RANGES.monthlyOperatingCostYen.max),
-                    Math.max(yenToMan(SETTINGS_RANGES.monthlyOperatingCostYen.min), Number(e.target.value) || 0),
-                  );
-                  updateSettings({ monthlyOperatingCostYen: manToYen(man) });
-                }}
                 className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
             </div>
