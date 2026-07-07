@@ -22,6 +22,7 @@ import { ProcessCard } from "@/components/ProcessCard";
 import { KpiCard } from "@/components/KpiCard";
 import { CumulativeChart } from "@/components/CumulativeChart";
 import { CalculationBreakdown } from "@/components/CalculationBreakdown";
+import { Pill } from "@/components/Pill";
 
 export default function HomePage() {
   const { settings, isCustomized } = useSettings();
@@ -110,7 +111,12 @@ export default function HomePage() {
         {/* 入力パネル */}
         <section className="space-y-5">
           <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-            <h2 className="mb-3 text-sm font-semibold text-navy-700">STEP1 業務選択</h2>
+            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-navy-700">
+              <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-navy-700 text-[10px] font-bold text-white">
+                1
+              </span>
+              業務選択
+            </h2>
             <div className="grid grid-cols-2 gap-2">
               {PROCESS_ORDER.map((id) => (
                 <ProcessCard
@@ -124,7 +130,12 @@ export default function HomePage() {
           </div>
 
           <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-            <h2 className="mb-3 text-sm font-semibold text-navy-700">必要情報</h2>
+            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-navy-700">
+              <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-navy-700 text-[10px] font-bold text-white">
+                2
+              </span>
+              必要情報
+            </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-ink">
@@ -240,8 +251,8 @@ export default function HomePage() {
           </div>
 
           {/* 前提条件サマリー (読み取り専用) */}
-          <div className="rounded-xl border border-surface-border bg-surface-sunken p-4 text-[12px] leading-relaxed text-ink-soft">
-            <div className="mb-1 flex items-center gap-2 font-medium text-ink">
+          <div className="rounded-xl border border-surface-border bg-surface-sunken p-4">
+            <div className="mb-2 flex items-center gap-2 text-[12px] font-medium text-ink">
               前提条件
               {isCustomized ? (
                 <span className="rounded-full bg-navy-100 px-2 py-0.5 text-[10px] font-medium text-navy-700">
@@ -249,11 +260,14 @@ export default function HomePage() {
                 </span>
               ) : null}
             </div>
-            <div>
-              人件費 {formatYenPerHour(hourlyWageYen)}円/時（年収{salaryMan.toLocaleString("ja-JP")}万円換算）／ 自動化率{" "}
-              {benchmark ? `${formatPercent(benchmark.automationRate * 100)}%` : "—"} ／ 稼働{" "}
-              {settings.workingDaysPerMonth}日/月 ／ 初期投資 {formatManYen(settings.initialInvestmentYen)}万円・月額{" "}
-              {formatManYen(settings.monthlyOperatingCostYen)}万円
+            <div className="flex flex-wrap gap-1.5">
+              <Pill>
+                人件費 {formatYenPerHour(hourlyWageYen)}円/時（年収{salaryMan.toLocaleString("ja-JP")}万円換算）
+              </Pill>
+              <Pill>自動化率 {benchmark ? `${formatPercent(benchmark.automationRate * 100)}%` : "—"}</Pill>
+              <Pill>稼働 {settings.workingDaysPerMonth}日/月</Pill>
+              <Pill>初期投資 {formatManYen(settings.initialInvestmentYen)}万円</Pill>
+              <Pill>月額 {formatManYen(settings.monthlyOperatingCostYen)}万円</Pill>
             </div>
           </div>
 
@@ -285,13 +299,13 @@ export default function HomePage() {
                 </div>
               ) : null}
 
-              <div className="animate-fade-in rounded-xl border border-navy-100 bg-gradient-to-br from-navy-50 to-white p-6 shadow-card">
-                <div className="text-sm font-medium text-navy-600">月間削減余地</div>
-                <div className="mt-1 text-5xl font-bold tabular-nums text-navy-800">
+              <div className="animate-fade-in overflow-hidden rounded-2xl bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 p-6 text-white shadow-pop">
+                <div className="text-sm font-medium text-navy-200">月間削減余地</div>
+                <div className="mt-1 text-5xl font-bold tabular-nums text-white">
                   約{formatManYen(result.monthlySavingsYen)}
-                  <span className="ml-1 text-2xl font-semibold">万円/月</span>
+                  <span className="ml-1 text-2xl font-semibold text-emerald-300">万円/月</span>
                 </div>
-                <div className="mt-1 text-sm text-ink-muted">
+                <div className="mt-1 text-sm text-navy-200">
                   年間 約{formatManYen(result.annualSavingsYen)}万円
                 </div>
               </div>
@@ -306,9 +320,10 @@ export default function HomePage() {
                   <KpiCard
                     label="ROI回収期間"
                     value={`約${formatMonths(result.roiMonths)}ヶ月`}
-                    sub={`初期投資${formatManYen(settings.initialInvestmentYen)}万円 ÷ 純削減効果${formatManYen(
-                      result.netMonthlySavingsYen,
-                    )}万円/月`}
+                    sub={[
+                      `初期投資 ${formatManYen(settings.initialInvestmentYen)}万円 ÷`,
+                      `純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月`,
+                    ]}
                   />
                 ) : (
                   <KpiCard

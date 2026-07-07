@@ -2,10 +2,17 @@
 
 import type { CalcResult } from "@/lib/calc";
 import { formatHours, formatManYen, formatMonths, formatPercent, formatYenPerHour } from "@/lib/format";
+import { Pill } from "@/components/Pill";
+
+interface Part {
+  text: string;
+  /** true の場合は演算子として薄いテキストで表示 (Pillにしない) */
+  op?: boolean;
+}
 
 interface Step {
   label: string;
-  formula: string;
+  parts: Part[];
   resultText: string;
   note?: string;
   highlight?: boolean;
@@ -36,7 +43,14 @@ export function CalculationBreakdown({
   const steps: Step[] = [
     {
       label: "① 月間対象工数",
-      formula: `${casesPerDay.toLocaleString("ja-JP")}件/日 × ${minutesPerCase}分/件 × ${workingDaysPerMonth}日 ÷ 60分`,
+      parts: [
+        { text: `${casesPerDay.toLocaleString("ja-JP")}件/日` },
+        { text: "×", op: true },
+        { text: `${minutesPerCase}分/件` },
+        { text: "×", op: true },
+        { text: `${workingDaysPerMonth}日` },
+        { text: "÷ 60分", op: true },
+      ],
       resultText: `${formatHours(result.monthlyHours)}時間/月`,
       note: result.isCapped
         ? `担当者の総稼働上限 ${formatHours(result.monthlyCapHours)}時間/月 に達しているため、そこで頭打ちにしています（専従率100%）`
@@ -44,27 +58,32 @@ export function CalculationBreakdown({
     },
     {
       label: "② 自動化可能工数",
-      formula: `${formatHours(result.monthlyHours)}時間 × 自動化率 ${formatPercent(automationRatePercent)}%`,
+      parts: [{ text: `${formatHours(result.monthlyHours)}時間` }, { text: "×", op: true }, { text: `自動化率 ${formatPercent(automationRatePercent)}%` }],
       resultText: `${formatHours(result.automatedHours)}時間/月`,
-      note: "AIが代行できる工数（残りは人による確認・例外対応として残ります）",
+      note: "AIが代行できる工数です（残りは人による確認・例外対応として残ります）",
     },
     {
       label: "③ 月間削減額",
-      formula: `${formatHours(result.automatedHours)}時間 × ${formatYenPerHour(hourlyWageYen)}円/時（年収${salaryMan.toLocaleString("ja-JP")}万円換算）`,
+      parts: [{ text: `${formatHours(result.automatedHours)}時間` }, { text: "×", op: true }, { text: `${formatYenPerHour(hourlyWageYen)}円/時` }],
       resultText: `約${formatManYen(result.monthlySavingsYen)}万円/月`,
+      note: `時給は年収${salaryMan.toLocaleString("ja-JP")}万円換算です`,
     },
     {
       label: "④ 純削減効果",
-      formula: `${formatManYen(result.monthlySavingsYen)}万円 − 月額運用費 ${formatManYen(monthlyOperatingCostYen)}万円`,
+      parts: [{ text: `${formatManYen(result.monthlySavingsYen)}万円` }, { text: "−", op: true }, { text: `運用費 ${formatManYen(monthlyOperatingCostYen)}万円` }],
       resultText: `${formatManYen(result.netMonthlySavingsYen)}万円/月`,
       note: "AIエージェント導入後の月額運用費を差し引いた、手元に残る削減効果です",
     },
     {
       label: "⑤ ROI回収期間",
-      formula:
+      parts:
         result.roiMonths !== null
-          ? `初期投資 ${formatManYen(initialInvestmentYen)}万円 ÷ 純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月`
-          : `この業務単体の純削減効果は ${formatManYen(result.netMonthlySavingsYen)}万円/月 のため、単独では算出できません`,
+          ? [
+              { text: `初期投資 ${formatManYen(initialInvestmentYen)}万円` },
+              { text: "÷", op: true },
+              { text: `純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月` },
+            ]
+          : [{ text: `純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月（単独では算出不可）` }],
       resultText: result.roiMonths !== null ? `約${formatMonths(result.roiMonths)}ヶ月` : "他業務と組み合わせを提案",
       note: result.roiMonths === null ? "下の「ご提案」もご参照ください" : undefined,
       highlight: true,
@@ -93,16 +112,22 @@ export function CalculationBreakdown({
             </span>
             <div className="min-w-0 flex-1 pt-0.5">
               <div className="text-xs font-medium text-ink-muted">{step.label}</div>
-              <div className="mt-0.5 text-[13px] leading-relaxed text-ink-soft">
-                {step.formula}
-                <span className="mx-1.5 text-ink-faint">=</span>
-                <span
-                  className={`font-semibold ${step.highlight ? "text-emerald-700" : "text-navy-800"}`}
-                >
-                  {step.resultText}
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                {step.parts.map((part, j) =>
+                  part.op ? (
+                    <span key={j} className="text-[13px] font-medium text-ink-faint" aria-hidden>
+                      {part.text}
+                    </span>
+                  ) : (
+                    <Pill key={j}>{part.text}</Pill>
+                  ),
+                )}
+                <span className="text-ink-faint" aria-hidden>
+                  →
                 </span>
+                <Pill tone={step.highlight ? "accent" : "solid"}>{step.resultText}</Pill>
               </div>
-              {step.note ? <div className="mt-1 text-[11px] text-ink-faint">{step.note}</div> : null}
+              {step.note ? <div className="mt-1.5 text-[11px] text-ink-faint">{step.note}</div> : null}
             </div>
           </li>
         ))}
