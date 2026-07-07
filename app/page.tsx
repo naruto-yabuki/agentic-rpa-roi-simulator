@@ -21,6 +21,7 @@ import {
 import { IndustryCard } from "@/components/IndustryCard";
 import { KpiCard } from "@/components/KpiCard";
 import { CumulativeChart } from "@/components/CumulativeChart";
+import { CalculationBreakdown } from "@/components/CalculationBreakdown";
 
 export default function HomePage() {
   const { settings, isCustomized } = useSettings();
@@ -297,7 +298,13 @@ export default function HomePage() {
                   sub={`削減額 − 月額運用費 ${formatManYen(settings.monthlyOperatingCostYen)}万円`}
                 />
                 {result.roiMonths !== null ? (
-                  <KpiCard label="ROI回収期間" value={`約${formatMonths(result.roiMonths)}ヶ月`} />
+                  <KpiCard
+                    label="ROI回収期間"
+                    value={`約${formatMonths(result.roiMonths)}ヶ月`}
+                    sub={`初期投資${formatManYen(settings.initialInvestmentYen)}万円 ÷ 純削減効果${formatManYen(
+                      result.netMonthlySavingsYen,
+                    )}万円/月`}
+                  />
                 ) : (
                   <KpiCard label="ROI回収期間" value="回収不可" tone="warning" />
                 )}
@@ -324,17 +331,17 @@ export default function HomePage() {
                 </div>
               )}
 
-              <div className="rounded-xl border border-surface-border bg-white p-4 text-[13px] leading-relaxed text-ink-soft shadow-card">
-                <h3 className="mb-1 text-sm font-semibold text-navy-700">計算根拠</h3>
-                <p>
-                  {casesPerDay.toLocaleString("ja-JP")}件/日 × {minutesPerCase}分/件 × {settings.workingDaysPerMonth}
-                  日 = 月{formatHours(result.monthlyHours)}時間 → 自動化率{formatPercent(
-                    (benchmark?.automationRate ?? 0) * 100,
-                  )}% → {formatHours(result.automatedHours)}時間 × {formatYenPerHour(result.hourlyWageYen)}円/時（年収
-                  {salaryMan.toLocaleString("ja-JP")}万円換算）
-                </p>
-                <p className="mt-1 text-ink-muted">専従率 {formatPercent(result.occupancyRate)}%</p>
-              </div>
+              <CalculationBreakdown
+                casesPerDay={casesPerDay}
+                minutesPerCase={minutesPerCase}
+                workingDaysPerMonth={settings.workingDaysPerMonth}
+                automationRatePercent={(industrySettings?.automationRate ?? 0) * 100}
+                hourlyWageYen={result.hourlyWageYen}
+                salaryMan={salaryMan}
+                monthlyOperatingCostYen={settings.monthlyOperatingCostYen}
+                initialInvestmentYen={settings.initialInvestmentYen}
+                result={result}
+              />
 
               {benchmark ? (
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 shadow-card">
