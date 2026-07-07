@@ -51,9 +51,7 @@ export function CalculationBreakdown({
         { text: "÷ 60分", op: true },
       ],
       resultText: `${formatHours(result.monthlyHours)}時間/月`,
-      note: result.isCapped
-        ? `担当者の総稼働上限 ${formatHours(result.monthlyCapHours)}時間/月 に達しているため、そこで頭打ちにしています（専従率100%）`
-        : `担当者の総稼働時間 ${formatHours(result.monthlyCapHours)}時間/月 のうち ${formatPercent(result.occupancyRate)}%（専従率）を占める計算です`,
+      note: `担当者の総稼働時間 ${formatHours(result.monthlyCapHours)}時間/月 のうち ${formatPercent(result.occupancyRate)}%（専従率）に相当する工数です`,
     },
     {
       label: "② 自動化可能工数",

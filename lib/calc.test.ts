@@ -23,7 +23,6 @@ describe("calculate (要件定義書 12章 サンプルシナリオ)", () => {
     expect(r.hourlyWageYen).toBeCloseTo(3_000, 6);
     expect(r.monthlyRawHours).toBeCloseTo(600, 6);
     expect(r.monthlyCapHours).toBeCloseTo(640, 6);
-    expect(r.isCapped).toBe(false);
     expect(Math.round(r.occupancyRate)).toBe(94);
     expect(r.automatedHours).toBeCloseTo(510, 6);
     expect(r.monthlySavingsYen).toBeCloseTo(1_530_000, 3);
@@ -46,7 +45,6 @@ describe("calculate (要件定義書 12章 サンプルシナリオ)", () => {
     });
     expect(r.monthlyRawHours).toBeCloseTo(600, 6);
     expect(r.monthlyCapHours).toBeCloseTo(640, 6);
-    expect(r.isCapped).toBe(false);
     expect(Math.round(r.occupancyRate)).toBe(94);
     expect(r.automatedHours).toBeCloseTo(498, 6);
     expect(r.monthlySavingsYen).toBeCloseTo(1_494_000, 3);
@@ -68,7 +66,6 @@ describe("calculate (要件定義書 12章 サンプルシナリオ)", () => {
     });
     expect(r.monthlyRawHours).toBeCloseTo(160, 6);
     expect(r.monthlyCapHours).toBeCloseTo(320, 6);
-    expect(r.isCapped).toBe(false);
     expect(Math.round(r.occupancyRate)).toBe(50);
     expect(r.automatedHours).toBeCloseTo(128, 6);
     expect(r.monthlySavingsYen).toBeCloseTo(384_000, 3);
@@ -89,7 +86,6 @@ describe("calculate (要件定義書 12章 サンプルシナリオ)", () => {
     expect(r.hourlyWageYen).toBeCloseTo(2_500, 6);
     expect(r.monthlyRawHours).toBeCloseTo(600, 6);
     expect(r.monthlyCapHours).toBeCloseTo(800, 6);
-    expect(r.isCapped).toBe(false);
     expect(Math.round(r.occupancyRate)).toBe(75);
     expect(r.automatedHours).toBeCloseTo(480, 6);
     expect(r.monthlySavingsYen).toBeCloseTo(1_200_000, 3);
@@ -101,7 +97,7 @@ describe("calculate (要件定義書 12章 サンプルシナリオ)", () => {
     expect(r.fteSaved).toBeCloseTo(3.0, 1);
   });
 
-  it("シナリオ5: 宿泊業 (キャップ発動ケース)", () => {
+  it("シナリオ5: 宿泊業 (担当人数の総稼働時間を超える工数でも頭打ちしないケース)", () => {
     const r = calculate({
       headcount: 2,
       casesPerDay: 250,
@@ -111,16 +107,15 @@ describe("calculate (要件定義書 12章 サンプルシナリオ)", () => {
     });
     expect(r.monthlyRawHours).toBeCloseTo(833.333, 2);
     expect(r.monthlyCapHours).toBeCloseTo(320, 6);
-    expect(r.isCapped).toBe(true);
-    expect(r.monthlyHours).toBeCloseTo(320, 6);
-    expect(Math.round(r.occupancyRate)).toBe(100);
-    expect(r.automatedHours).toBeCloseTo(265.6, 3);
-    expect(r.monthlySavingsYen).toBeCloseTo(796_800, 2);
-    expect(r.netMonthlySavingsYen).toBeCloseTo(296_800, 2);
-    expect(r.roiMonths!).toBeCloseTo(10.1, 1);
-    expect(r.breakEvenMonth).toBe(11);
-    expect(r.cumulativeByMonth[9]).toBeCloseTo(-32_000, 2); // Cum(10)
-    expect(r.cumulativeByMonth[10]).toBeCloseTo(264_800, 2); // Cum(11)
-    expect(r.fteSaved).toBeCloseTo(1.7, 1);
+    expect(r.monthlyHours).toBeCloseTo(833.333, 2);
+    expect(Math.round(r.occupancyRate)).toBe(260);
+    expect(r.automatedHours).toBeCloseTo(691.667, 2);
+    expect(r.monthlySavingsYen).toBeCloseTo(2_075_000, 0);
+    expect(r.netMonthlySavingsYen).toBeCloseTo(1_575_000, 0);
+    expect(r.roiMonths!).toBeCloseTo(1.9, 1);
+    expect(r.breakEvenMonth).toBe(2);
+    expect(r.cumulativeByMonth[0]).toBeCloseTo(-1_425_000, 0); // Cum(1)
+    expect(r.cumulativeByMonth[1]).toBeCloseTo(150_000, 0); // Cum(2)
+    expect(r.fteSaved).toBeCloseTo(4.3, 1);
   });
 });

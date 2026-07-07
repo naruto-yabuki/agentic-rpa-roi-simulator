@@ -274,12 +274,6 @@ export default function HomePage() {
             </div>
           ) : (
             <>
-              {result.isCapped ? (
-                <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-base text-amber-800">
-                  入力値では担当者の総稼働時間を超えるため、総稼働時間で頭打ちにして試算しています。件数・処理時間を再度ご確認ください。
-                </div>
-              ) : null}
-
               <div className="animate-fade-in overflow-hidden rounded-2xl bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 p-6 text-white shadow-pop">
                 <div className="text-base font-medium text-navy-200">月間削減余地</div>
                 <div className="mt-1 text-6xl font-bold tabular-nums text-white">

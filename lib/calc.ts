@@ -35,13 +35,11 @@ export interface CalcResult {
   hourlyWageYen: number;
   /** H_raw: 月間対象工数 (時間/月) */
   monthlyRawHours: number;
-  /** H_cap: 物理上限 (時間/月) = N × h × D */
+  /** H_cap: 担当人数の総稼働時間 (時間/月) = N × h × D。参考表示用で、工数の頭打ちには使わない */
   monthlyCapHours: number;
-  /** H: 採用工数 (時間/月) = min(H_raw, H_cap) */
+  /** H: 採用工数 (時間/月) = H_raw (頭打ちなし) */
   monthlyHours: number;
-  /** H_raw > H_cap のとき true */
-  isCapped: boolean;
-  /** 業務専従率 (%) = H ÷ H_cap × 100 */
+  /** 業務専従率 (%) = H ÷ H_cap × 100。100%を超える場合は入力人数の稼働時間を上回っていることを示す */
   occupancyRate: number;
   /** H_auto: 自動化可能工数 (時間/月) = H × r */
   automatedHours: number;
@@ -78,11 +76,10 @@ export function calculate(input: CalcInput): CalcResult {
   const hourlyWageYen = A / L;
   // (1) 月間対象工数
   const monthlyRawHours = ((Q * T) / 60) * D;
-  // (2) 物理上限
+  // (2) 担当人数の総稼働時間 (参考値。工数の頭打ちには使わない)
   const monthlyCapHours = N * h * D;
-  // (3) 採用工数
-  const isCapped = monthlyRawHours > monthlyCapHours;
-  const monthlyHours = Math.min(monthlyRawHours, monthlyCapHours);
+  // (3) 採用工数 — 物理上限で頭打ちにせず、算出された工数をそのまま採用する
+  const monthlyHours = monthlyRawHours;
   // (4) 業務専従率
   const occupancyRate = monthlyCapHours > 0 ? (monthlyHours / monthlyCapHours) * 100 : 0;
   // (5) 自動化可能工数
@@ -112,7 +109,6 @@ export function calculate(input: CalcInput): CalcResult {
     monthlyRawHours,
     monthlyCapHours,
     monthlyHours,
-    isCapped,
     occupancyRate,
     automatedHours,
     monthlySavingsYen,
