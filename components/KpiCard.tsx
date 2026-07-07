@@ -23,10 +23,10 @@ export function KpiCard({
 
   return (
     <div className={`rounded-xl border p-4 shadow-card ${toneClass}`}>
-      <div className="text-[11px] font-semibold uppercase tracking-wide text-ink-muted">{label}</div>
+      <div className="text-xs font-semibold uppercase tracking-wide text-ink-muted">{label}</div>
       <div
         className={`mt-1.5 font-bold tabular-nums leading-tight ${valueToneClass} ${
-          size === "lg" ? "text-4xl md:text-5xl" : "text-2xl"
+          size === "lg" ? "text-5xl md:text-6xl" : "text-3xl"
         }`}
       >
         {value}
@@ -34,7 +34,7 @@ export function KpiCard({
       {subLines.length ? (
         <div className="mt-2 space-y-0.5 border-t border-black/5 pt-2">
           {subLines.map((line, i) => (
-            <div key={i} className="text-[11px] leading-snug text-ink-muted">
+            <div key={i} className="text-sm leading-snug text-ink-muted">
               {line}
             </div>
           ))}

@@ -92,42 +92,42 @@ export function CalculationBreakdown({
 
   return (
     <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-      <h3 className="mb-1 text-sm font-semibold text-navy-700">計算根拠</h3>
-      <p className="mb-4 text-[11px] text-ink-muted">
+      <h3 className="mb-1 text-base font-semibold text-navy-700">計算根拠</h3>
+      <p className="mb-4 text-sm text-ink-muted">
         左の入力値がどのように積み上がって最終的なROI回収期間になるかを、5ステップで表示しています。
       </p>
       <ol>
         {steps.map((step, i) => (
-          <li key={step.label} className="relative flex gap-3 pb-5 last:pb-0">
+          <li key={step.label} className="relative flex gap-3 pb-6 last:pb-0">
             {i < steps.length - 1 ? (
-              <span className="absolute left-[13px] top-7 h-full w-px bg-surface-border" aria-hidden />
+              <span className="absolute left-[15px] top-8 h-full w-px bg-surface-border" aria-hidden />
             ) : null}
             <span
-              className={`z-10 flex h-7 w-7 flex-none items-center justify-center rounded-full text-xs font-bold text-white ${
+              className={`z-10 flex h-8 w-8 flex-none items-center justify-center rounded-full text-sm font-bold text-white ${
                 step.highlight ? "bg-emerald-600" : "bg-navy-700"
               }`}
               aria-hidden
             >
               {i + 1}
             </span>
-            <div className="min-w-0 flex-1 pt-0.5">
-              <div className="text-xs font-medium text-ink-muted">{step.label}</div>
-              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            <div className="min-w-0 flex-1 pt-1">
+              <div className="text-sm font-medium text-ink-muted">{step.label}</div>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 {step.parts.map((part, j) =>
                   part.op ? (
-                    <span key={j} className="text-[13px] font-medium text-ink-faint" aria-hidden>
+                    <span key={j} className="text-base font-medium text-ink-faint" aria-hidden>
                       {part.text}
                     </span>
                   ) : (
                     <Pill key={j}>{part.text}</Pill>
                   ),
                 )}
-                <span className="text-ink-faint" aria-hidden>
+                <span className="text-base text-ink-faint" aria-hidden>
                   →
                 </span>
                 <Pill tone={step.highlight ? "accent" : "solid"}>{step.resultText}</Pill>
               </div>
-              {step.note ? <div className="mt-1.5 text-[11px] text-ink-faint">{step.note}</div> : null}
+              {step.note ? <div className="mt-2 text-sm text-ink-faint">{step.note}</div> : null}
             </div>
           </li>
         ))}

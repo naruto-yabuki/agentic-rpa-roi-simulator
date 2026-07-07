@@ -12,8 +12,8 @@ export function CumulativeChart({
   const height = 220;
   const paddingLeft = 8;
   const paddingRight = 8;
-  const paddingTop = 20;
-  const paddingBottom = 24;
+  const paddingTop = 26;
+  const paddingBottom = 28;
   const chartWidth = width - paddingLeft - paddingRight;
   const chartHeight = height - paddingTop - paddingBottom;
 
@@ -45,7 +45,7 @@ export function CumulativeChart({
               opacity={isBreakEven ? 1 : 0.85}
             />
             {isBreakEven ? (
-              <text x={x + w / 2} y={barTop - 5} textAnchor="middle" fontSize={9} fontWeight={700} fill="#0f1730">
+              <text x={x + w / 2} y={barTop - 6} textAnchor="middle" fontSize={12} fontWeight={700} fill="#0f1730">
                 投資回収
               </text>
             ) : null}
@@ -59,7 +59,7 @@ export function CumulativeChart({
             x={paddingLeft + i * barWidth + barWidth / 2}
             y={height - 6}
             textAnchor="middle"
-            fontSize={9}
+            fontSize={12}
             fill="#6b7290"
           >
             {i + 1}

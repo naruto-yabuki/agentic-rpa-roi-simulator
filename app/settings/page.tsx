@@ -27,15 +27,15 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto min-h-screen max-w-4xl px-4 py-6 md:px-8">
       <header className="mb-6">
-        <Link href="/" className="text-sm font-medium text-navy-600 hover:underline">
+        <Link href="/" className="text-base font-medium text-navy-600 hover:underline">
           ← メイン画面へ戻る
         </Link>
-        <h1 className="mt-2 text-xl font-bold text-navy-900">試算前提の設定</h1>
-        <p className="mt-1 rounded-lg bg-navy-50 px-3 py-2 text-sm text-navy-700">
+        <h1 className="mt-2 text-2xl font-bold text-navy-900">試算前提の設定</h1>
+        <p className="mt-1 rounded-lg bg-navy-50 px-3 py-2 text-base text-navy-700">
           この画面の内容はお客様には表示されません。商談前に調整してください。
         </p>
         {isCustomized ? (
-          <p className="mt-2 text-xs font-medium text-emerald-700">
+          <p className="mt-2 text-sm font-medium text-emerald-700">
             現在デフォルトから変更された設定が適用されています。
           </p>
         ) : null}
@@ -44,11 +44,11 @@ export default function SettingsPage() {
       <div className="space-y-6">
         {/* (a) 人件費設定 */}
         <section className="rounded-xl border border-surface-border bg-white p-5 shadow-card">
-          <h2 className="mb-4 text-sm font-semibold text-navy-700">人件費設定</h2>
+          <h2 className="mb-4 text-base font-semibold text-navy-700">人件費設定</h2>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-ink">平均年収（万円/年）</label>
+              <label className="block text-base font-medium text-ink">平均年収（万円/年）</label>
               <input
                 type="number"
                 min={yenToMan(SETTINGS_RANGES.averageAnnualSalaryYen.min)}
@@ -62,13 +62,13 @@ export default function SettingsPage() {
                   );
                   updateSettings({ averageAnnualSalaryYen: manToYen(man) });
                 }}
-                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-sm tabular-nums"
+                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
-              <p className="mt-1 text-[11px] text-ink-muted">対象業務担当者の平均年収。既定 600万円</p>
+              <p className="mt-1 text-sm text-ink-muted">対象業務担当者の平均年収。既定 600万円</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-ink">年間所定労働時間（時間/年）</label>
+              <label className="block text-base font-medium text-ink">年間所定労働時間（時間/年）</label>
               <input
                 type="number"
                 min={SETTINGS_RANGES.annualWorkingHours.min}
@@ -82,15 +82,15 @@ export default function SettingsPage() {
                   );
                   updateSettings({ annualWorkingHours: v });
                 }}
-                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-sm tabular-nums"
+                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
-              <p className="mt-1 text-[11px] text-ink-muted">
+              <p className="mt-1 text-sm text-ink-muted">
                 月160〜170時間×12ヶ月に相当。通常は変更不要
               </p>
             </div>
           </div>
 
-          <div className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
+          <div className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-base text-emerald-900">
             平均年収 {yenToMan(settings.averageAnnualSalaryYen).toLocaleString("ja-JP")}万円 ÷ 年間所定労働時間{" "}
             {settings.annualWorkingHours.toLocaleString("ja-JP")}時間 = 時給{" "}
             <span className="font-bold">{formatYenPerHour(hourlyWageYen)}円/時</span>
@@ -99,11 +99,11 @@ export default function SettingsPage() {
 
         {/* (b) 稼働・業務前提 */}
         <section className="rounded-xl border border-surface-border bg-white p-5 shadow-card">
-          <h2 className="mb-4 text-sm font-semibold text-navy-700">稼働・業務前提</h2>
+          <h2 className="mb-4 text-base font-semibold text-navy-700">稼働・業務前提</h2>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-ink">月間稼働日数（日）</label>
+              <label className="block text-base font-medium text-ink">月間稼働日数（日）</label>
               <input
                 type="number"
                 min={SETTINGS_RANGES.workingDaysPerMonth.min}
@@ -116,11 +116,11 @@ export default function SettingsPage() {
                   );
                   updateSettings({ workingDaysPerMonth: v });
                 }}
-                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-sm tabular-nums"
+                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-ink">1日の所定労働時間（時間）</label>
+              <label className="block text-base font-medium text-ink">1日の所定労働時間（時間）</label>
               <input
                 type="number"
                 min={SETTINGS_RANGES.dailyWorkingHours.min}
@@ -133,17 +133,17 @@ export default function SettingsPage() {
                   );
                   updateSettings({ dailyWorkingHours: v });
                 }}
-                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-sm tabular-nums"
+                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
-              <p className="mt-1 text-[11px] text-ink-muted">物理上限（キャップ）計算に使用</p>
+              <p className="mt-1 text-sm text-ink-muted">物理上限（キャップ）計算に使用</p>
             </div>
           </div>
 
-          <h3 className="mb-2 mt-5 text-xs font-semibold text-ink-muted">業務別デフォルト値</h3>
+          <h3 className="mb-2 mt-5 text-sm font-semibold text-ink-muted">業務別デフォルト値</h3>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[560px] border-collapse text-sm">
+            <table className="w-full min-w-[620px] border-collapse text-base">
               <thead>
-                <tr className="border-b border-surface-border text-left text-xs text-ink-muted">
+                <tr className="border-b border-surface-border text-left text-sm text-ink-muted">
                   <th className="py-2 pr-2">対象業務</th>
                   <th className="px-2 py-2">1件あたり処理時間（分）</th>
                   <th className="px-2 py-2">自動化率（%）</th>
@@ -170,7 +170,7 @@ export default function SettingsPage() {
                               ),
                             })
                           }
-                          className="w-24 rounded-lg border border-surface-border px-2 py-1 text-right tabular-nums"
+                          className="w-24 rounded-lg border border-surface-border px-2 py-1.5 text-right tabular-nums"
                         />
                       </td>
                       <td className="px-2 py-2">
@@ -186,7 +186,7 @@ export default function SettingsPage() {
                             );
                             updateProcessSetting(id, { automationRate: pct / 100 });
                           }}
-                          className="w-20 rounded-lg border border-surface-border px-2 py-1 text-right tabular-nums"
+                          className="w-20 rounded-lg border border-surface-border px-2 py-1.5 text-right tabular-nums"
                         />
                       </td>
                       <td className="px-2 py-2">
@@ -203,7 +203,7 @@ export default function SettingsPage() {
                               ),
                             })
                           }
-                          className="w-24 rounded-lg border border-surface-border px-2 py-1 text-right tabular-nums"
+                          className="w-24 rounded-lg border border-surface-border px-2 py-1.5 text-right tabular-nums"
                         />
                       </td>
                     </tr>
@@ -212,17 +212,17 @@ export default function SettingsPage() {
               </tbody>
             </table>
           </div>
-          <p className="mt-2 text-[11px] text-ink-muted">
+          <p className="mt-2 text-sm text-ink-muted">
             ※ 導入実績に基づく参考値。件数/日デフォルトはメイン画面の初期値になるだけで、商談中に上書きされる想定です。
           </p>
         </section>
 
         {/* (c) 費用設定 */}
         <section className="rounded-xl border border-surface-border bg-white p-5 shadow-card">
-          <h2 className="mb-4 text-sm font-semibold text-navy-700">費用設定</h2>
+          <h2 className="mb-4 text-base font-semibold text-navy-700">費用設定</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-ink">初期投資（万円）</label>
+              <label className="block text-base font-medium text-ink">初期投資（万円）</label>
               <input
                 type="number"
                 min={yenToMan(SETTINGS_RANGES.initialInvestmentYen.min)}
@@ -235,11 +235,11 @@ export default function SettingsPage() {
                   );
                   updateSettings({ initialInvestmentYen: manToYen(man) });
                 }}
-                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-sm tabular-nums"
+                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-ink">月額運用費（万円/月）</label>
+              <label className="block text-base font-medium text-ink">月額運用費（万円/月）</label>
               <input
                 type="number"
                 min={yenToMan(SETTINGS_RANGES.monthlyOperatingCostYen.min)}
@@ -252,7 +252,7 @@ export default function SettingsPage() {
                   );
                   updateSettings({ monthlyOperatingCostYen: manToYen(man) });
                 }}
-                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-sm tabular-nums"
+                className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base tabular-nums"
               />
             </div>
           </div>
@@ -263,7 +263,7 @@ export default function SettingsPage() {
           <button
             type="button"
             onClick={handleReset}
-            className="rounded-lg border border-surface-border bg-white px-4 py-2 text-sm font-medium text-ink-soft hover:bg-surface-sunken"
+            className="rounded-lg border border-surface-border bg-white px-4 py-2.5 text-base font-medium text-ink-soft hover:bg-surface-sunken"
           >
             初期値に戻す
           </button>

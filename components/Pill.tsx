@@ -13,7 +13,7 @@ export function Pill({
         : "border border-surface-border bg-white text-ink-soft";
   return (
     <span
-      className={`inline-flex items-center whitespace-nowrap rounded-md px-2 py-0.5 text-[12px] font-medium tabular-nums ${toneClass}`}
+      className={`inline-flex items-center whitespace-nowrap rounded-md px-2.5 py-1 text-sm font-medium tabular-nums ${toneClass}`}
     >
       {children}
     </span>

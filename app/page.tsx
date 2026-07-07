@@ -75,21 +75,21 @@ export default function HomePage() {
       {/* ヘッダー */}
       <header className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <div className="text-[11px] font-medium uppercase tracking-wide text-navy-500">
+          <div className="text-sm font-medium uppercase tracking-wide text-navy-500">
             株式会社ニューロスフィア
           </div>
-          <h1 className="text-xl font-bold text-navy-800 md:text-2xl">
+          <h1 className="text-2xl font-bold text-navy-800 md:text-3xl">
             Agentic RPA 削減効果シミュレーター
           </h1>
           {customerName.trim() ? (
-            <p className="mt-1 text-sm text-ink-soft">{customerName.trim()}様向け試算</p>
+            <p className="mt-1 text-base text-ink-soft">{customerName.trim()}様向け試算</p>
           ) : null}
         </div>
         <div className="no-print flex items-center gap-2">
           <button
             type="button"
             onClick={() => window.print()}
-            className="rounded-lg bg-navy-700 px-3 py-2 text-sm font-medium text-white shadow-card hover:bg-navy-800"
+            className="rounded-lg bg-navy-700 px-4 py-2.5 text-base font-medium text-white shadow-card hover:bg-navy-800"
           >
             PDF出力
           </button>
@@ -97,9 +97,9 @@ export default function HomePage() {
             href="/settings"
             aria-label="試算前提の設定"
             title="試算前提の設定"
-            className="rounded-lg border border-surface-border bg-white p-2 text-ink-muted hover:text-navy-700"
+            className="rounded-lg border border-surface-border bg-white p-2.5 text-ink-muted hover:text-navy-700"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="3" />
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
             </svg>
@@ -111,8 +111,8 @@ export default function HomePage() {
         {/* 入力パネル */}
         <section className="space-y-5">
           <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-navy-700">
-              <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-navy-700 text-[10px] font-bold text-white">
+            <h2 className="mb-3 flex items-center gap-2 text-base font-semibold text-navy-700">
+              <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-navy-700 text-xs font-bold text-white">
                 1
               </span>
               業務選択
@@ -130,15 +130,15 @@ export default function HomePage() {
           </div>
 
           <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-navy-700">
-              <span className="flex h-5 w-5 flex-none items-center justify-center rounded-full bg-navy-700 text-[10px] font-bold text-white">
+            <h2 className="mb-3 flex items-center gap-2 text-base font-semibold text-navy-700">
+              <span className="flex h-6 w-6 flex-none items-center justify-center rounded-full bg-navy-700 text-xs font-bold text-white">
                 2
               </span>
               必要情報
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-ink">
+                <label className="block text-base font-medium text-ink">
                   ① その事務作業は、何名の方が担当されていますか？
                 </label>
                 <div className="mt-2 flex items-center gap-3">
@@ -164,14 +164,14 @@ export default function HomePage() {
                         ),
                       )
                     }
-                    className="w-16 rounded-lg border border-surface-border px-2 py-1 text-right text-sm tabular-nums"
+                    className="w-20 rounded-lg border border-surface-border px-2 py-1.5 text-right text-base tabular-nums"
                   />
-                  <span className="text-sm text-ink-muted">人</span>
+                  <span className="text-base text-ink-muted">人</span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-ink">
+                <label className="block text-base font-medium text-ink">
                   ② 1日あたり、合計で何件くらい処理されていますか？
                 </label>
                 <div className="mt-2 flex items-center gap-3">
@@ -199,17 +199,17 @@ export default function HomePage() {
                         ),
                       )
                     }
-                    className="w-20 rounded-lg border border-surface-border px-2 py-1 text-right text-sm tabular-nums disabled:bg-surface-sunken"
+                    className="w-24 rounded-lg border border-surface-border px-2 py-1.5 text-right text-base tabular-nums disabled:bg-surface-sunken"
                   />
-                  <span className="text-sm text-ink-muted">件/日</span>
+                  <span className="text-base text-ink-muted">件/日</span>
                 </div>
                 {!processId ? (
-                  <p className="mt-1 text-[11px] text-ink-muted">※ 業務を選択すると入力できます</p>
+                  <p className="mt-1 text-sm text-ink-muted">※ 業務を選択すると入力できます</p>
                 ) : null}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-ink">
+                <label className="block text-base font-medium text-ink">
                   ③ 1件あたりの処理時間（任意）
                   {benchmark ? (
                     <span className="ml-1 font-normal text-ink-muted">
@@ -242,9 +242,9 @@ export default function HomePage() {
                         ),
                       )
                     }
-                    className="w-16 rounded-lg border border-surface-border px-2 py-1 text-right text-sm tabular-nums disabled:bg-surface-sunken"
+                    className="w-20 rounded-lg border border-surface-border px-2 py-1.5 text-right text-base tabular-nums disabled:bg-surface-sunken"
                   />
-                  <span className="text-sm text-ink-muted">分</span>
+                  <span className="text-base text-ink-muted">分</span>
                 </div>
               </div>
             </div>
@@ -252,10 +252,10 @@ export default function HomePage() {
 
           {/* 前提条件サマリー (読み取り専用) */}
           <div className="rounded-xl border border-surface-border bg-surface-sunken p-4">
-            <div className="mb-2 flex items-center gap-2 text-[12px] font-medium text-ink">
+            <div className="mb-2 flex items-center gap-2 text-base font-medium text-ink">
               前提条件
               {isCustomized ? (
-                <span className="rounded-full bg-navy-100 px-2 py-0.5 text-[10px] font-medium text-navy-700">
+                <span className="rounded-full bg-navy-100 px-2 py-0.5 text-xs font-medium text-navy-700">
                   カスタム設定適用中
                 </span>
               ) : null}
@@ -272,40 +272,40 @@ export default function HomePage() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-ink-muted">お客様名（任意）</label>
+            <label className="block text-sm font-medium text-ink-muted">お客様名（任意）</label>
             <input
               type="text"
               maxLength={40}
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="株式会社◯◯"
-              className="mt-1 w-full rounded-lg border border-surface-border px-3 py-1.5 text-sm"
+              className="mt-1 w-full rounded-lg border border-surface-border px-3 py-2 text-base"
             />
-            <p className="mt-1 text-[10px] text-ink-faint">※ どこにも保存・送信されません</p>
+            <p className="mt-1 text-xs text-ink-faint">※ どこにも保存・送信されません</p>
           </div>
         </section>
 
         {/* 結果パネル */}
         <section className="space-y-4">
           {!processId || !result ? (
-            <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-surface-border bg-white text-sm text-ink-muted">
+            <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-surface-border bg-white text-base text-ink-muted">
               業務を選択すると試算が始まります
             </div>
           ) : (
             <>
               {result.isCapped ? (
-                <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-base text-amber-800">
                   入力値では担当者の総稼働時間を超えるため、総稼働時間で頭打ちにして試算しています。件数・処理時間を再度ご確認ください。
                 </div>
               ) : null}
 
               <div className="animate-fade-in overflow-hidden rounded-2xl bg-gradient-to-br from-navy-900 via-navy-800 to-navy-700 p-6 text-white shadow-pop">
-                <div className="text-sm font-medium text-navy-200">月間削減余地</div>
-                <div className="mt-1 text-5xl font-bold tabular-nums text-white">
+                <div className="text-base font-medium text-navy-200">月間削減余地</div>
+                <div className="mt-1 text-6xl font-bold tabular-nums text-white">
                   約{formatManYen(result.monthlySavingsYen)}
-                  <span className="ml-1 text-2xl font-semibold text-emerald-300">万円/月</span>
+                  <span className="ml-1 text-3xl font-semibold text-emerald-300">万円/月</span>
                 </div>
-                <div className="mt-1 text-sm text-navy-200">
+                <div className="mt-1 text-base text-navy-200">
                   年間 約{formatManYen(result.annualSavingsYen)}万円
                 </div>
               </div>
@@ -343,8 +343,8 @@ export default function HomePage() {
               </div>
 
               {result.netMonthlySavingsYen <= 0 ? (
-                <div className="rounded-xl border border-navy-200 bg-navy-50 p-4 text-sm text-navy-900 shadow-card">
-                  <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-navy-800">
+                <div className="rounded-xl border border-navy-200 bg-navy-50 p-4 text-base text-navy-900 shadow-card">
+                  <h3 className="mb-2 flex items-center gap-1.5 text-base font-semibold text-navy-800">
                     <span aria-hidden>💡</span> ご提案
                   </h3>
                   <p>
@@ -365,7 +365,7 @@ export default function HomePage() {
                 </div>
               ) : (
                 <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-                  <h3 className="mb-3 text-sm font-semibold text-navy-700">
+                  <h3 className="mb-3 text-base font-semibold text-navy-700">
                     累積純削減額の推移（24ヶ月・初期投資控除後）
                   </h3>
                   <CumulativeChart
@@ -388,8 +388,8 @@ export default function HomePage() {
               />
 
               {benchmark ? (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 shadow-card">
-                  <h3 className="mb-2 text-sm font-semibold text-emerald-800">定性効果</h3>
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-base text-emerald-900 shadow-card">
+                  <h3 className="mb-2 text-base font-semibold text-emerald-800">定性効果</h3>
                   <ul className="list-disc space-y-1 pl-5">
                     {benchmark.qualitativeEffects.map((effect) => (
                       <li key={effect}>{effect}</li>
@@ -401,7 +401,7 @@ export default function HomePage() {
             </>
           )}
 
-          <p className="text-[11px] leading-relaxed text-ink-faint">
+          <p className="text-sm leading-relaxed text-ink-faint">
             本試算は入力値と業務平均値に基づく概算であり、削減効果を保証するものではありません。正式な削減余地は業務棚卸し（導入支援の第1フェーズ）にて算定します。入力値はブラウザ内のみで処理され、外部へ送信・保存されません。
           </p>
         </section>
