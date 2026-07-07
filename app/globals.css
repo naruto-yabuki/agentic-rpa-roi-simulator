@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, -apple-system,
+    BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  color: theme("colors.ink.DEFAULT");
+  background: theme("colors.surface.sunken");
+}
+
+.no-print {
+  display: block;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .print-page {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
