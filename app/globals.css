@@ -12,10 +12,6 @@ body {
   background: theme("colors.surface.sunken");
 }
 
-.no-print {
-  display: block;
-}
-
 @media print {
   @page {
     size: A4 portrait;
