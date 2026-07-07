@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { calculate, type CalcSettings } from "./calc";
-import { MASTER_DEFAULTS } from "./industryBenchmarks";
+import { MASTER_DEFAULTS } from "./processBenchmarks";
 
 const defaultSettings: CalcSettings = {
   averageAnnualSalaryYen: MASTER_DEFAULTS.averageAnnualSalaryYen,

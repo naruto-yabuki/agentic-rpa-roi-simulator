@@ -3,17 +3,17 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import {
   type AppSettings,
-  type IndustryId,
-  type IndustrySettings,
+  type ProcessId,
+  type ProcessSettings,
   buildDefaultSettings,
-} from "./industryBenchmarks";
+} from "./processBenchmarks";
 
 const STORAGE_KEY = "agentic-rpa-roi-settings-v1";
 
 interface SettingsContextValue {
   settings: AppSettings;
-  updateSettings: (patch: Partial<Omit<AppSettings, "industry">>) => void;
-  updateIndustrySetting: (id: IndustryId, patch: Partial<IndustrySettings>) => void;
+  updateSettings: (patch: Partial<Omit<AppSettings, "process">>) => void;
+  updateProcessSetting: (id: ProcessId, patch: Partial<ProcessSettings>) => void;
   resetToDefaults: () => void;
   isCustomized: boolean;
 }
@@ -30,7 +30,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as AppSettings;
-        setSettings({ ...buildDefaultSettings(), ...parsed, industry: { ...buildDefaultSettings().industry, ...parsed.industry } });
+        setSettings({ ...buildDefaultSettings(), ...parsed, process: { ...buildDefaultSettings().process, ...parsed.process } });
       }
     } catch {
       // 破損データは無視してデフォルトのまま使う
@@ -47,16 +47,16 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     }
   }, [settings, hydrated]);
 
-  const updateSettings = useCallback((patch: Partial<Omit<AppSettings, "industry">>) => {
+  const updateSettings = useCallback((patch: Partial<Omit<AppSettings, "process">>) => {
     setSettings((prev) => ({ ...prev, ...patch }));
   }, []);
 
-  const updateIndustrySetting = useCallback((id: IndustryId, patch: Partial<IndustrySettings>) => {
+  const updateProcessSetting = useCallback((id: ProcessId, patch: Partial<ProcessSettings>) => {
     setSettings((prev) => ({
       ...prev,
-      industry: {
-        ...prev.industry,
-        [id]: { ...prev.industry[id], ...patch },
+      process: {
+        ...prev.process,
+        [id]: { ...prev.process[id], ...patch },
       },
     }));
   }, []);
@@ -76,8 +76,8 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, [settings]);
 
   const value = useMemo(
-    () => ({ settings, updateSettings, updateIndustrySetting, resetToDefaults, isCustomized }),
-    [settings, updateSettings, updateIndustrySetting, resetToDefaults, isCustomized],
+    () => ({ settings, updateSettings, updateProcessSetting, resetToDefaults, isCustomized }),
+    [settings, updateSettings, updateProcessSetting, resetToDefaults, isCustomized],
   );
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { INDUSTRY_BENCHMARKS, INDUSTRY_ORDER, SETTINGS_RANGES } from "@/lib/industryBenchmarks";
+import { PROCESS_BENCHMARKS, PROCESS_ORDER, SETTINGS_RANGES } from "@/lib/processBenchmarks";
 import { useSettings } from "@/lib/settings-context";
 import { formatYenPerHour } from "@/lib/format";
 
@@ -14,7 +14,7 @@ function manToYen(man: number): number {
 }
 
 export default function SettingsPage() {
-  const { settings, updateSettings, updateIndustrySetting, resetToDefaults, isCustomized } = useSettings();
+  const { settings, updateSettings, updateProcessSetting, resetToDefaults, isCustomized } = useSettings();
 
   const hourlyWageYen = settings.averageAnnualSalaryYen / settings.annualWorkingHours;
 
@@ -139,23 +139,23 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <h3 className="mb-2 mt-5 text-xs font-semibold text-ink-muted">業界別デフォルト値</h3>
+          <h3 className="mb-2 mt-5 text-xs font-semibold text-ink-muted">業務別デフォルト値</h3>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[560px] border-collapse text-sm">
               <thead>
                 <tr className="border-b border-surface-border text-left text-xs text-ink-muted">
-                  <th className="py-2 pr-2">業界</th>
+                  <th className="py-2 pr-2">対象業務</th>
                   <th className="px-2 py-2">1件あたり処理時間（分）</th>
                   <th className="px-2 py-2">自動化率（%）</th>
                   <th className="px-2 py-2">件数/日デフォルト</th>
                 </tr>
               </thead>
               <tbody>
-                {INDUSTRY_ORDER.map((id) => {
-                  const row = settings.industry[id];
+                {PROCESS_ORDER.map((id) => {
+                  const row = settings.process[id];
                   return (
                     <tr key={id} className="border-b border-surface-border last:border-0">
-                      <td className="py-2 pr-2 font-medium text-ink">{INDUSTRY_BENCHMARKS[id].label}</td>
+                      <td className="py-2 pr-2 font-medium text-ink">{PROCESS_BENCHMARKS[id].label}</td>
                       <td className="px-2 py-2">
                         <input
                           type="number"
@@ -163,7 +163,7 @@ export default function SettingsPage() {
                           max={SETTINGS_RANGES.minutesPerCase.max}
                           value={row.minutesPerCase}
                           onChange={(e) =>
-                            updateIndustrySetting(id, {
+                            updateProcessSetting(id, {
                               minutesPerCase: Math.min(
                                 SETTINGS_RANGES.minutesPerCase.max,
                                 Math.max(SETTINGS_RANGES.minutesPerCase.min, Number(e.target.value) || 0),
@@ -184,7 +184,7 @@ export default function SettingsPage() {
                               Math.round(SETTINGS_RANGES.automationRate.max * 100),
                               Math.max(Math.round(SETTINGS_RANGES.automationRate.min * 100), Number(e.target.value) || 0),
                             );
-                            updateIndustrySetting(id, { automationRate: pct / 100 });
+                            updateProcessSetting(id, { automationRate: pct / 100 });
                           }}
                           className="w-20 rounded-lg border border-surface-border px-2 py-1 text-right tabular-nums"
                         />
@@ -196,7 +196,7 @@ export default function SettingsPage() {
                           max={SETTINGS_RANGES.casesPerDayDefault.max}
                           value={row.casesPerDayDefault}
                           onChange={(e) =>
-                            updateIndustrySetting(id, {
+                            updateProcessSetting(id, {
                               casesPerDayDefault: Math.min(
                                 SETTINGS_RANGES.casesPerDayDefault.max,
                                 Math.max(SETTINGS_RANGES.casesPerDayDefault.min, Number(e.target.value) || 0),

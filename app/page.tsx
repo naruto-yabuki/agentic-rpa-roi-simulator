@@ -4,11 +4,11 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { calculate } from "@/lib/calc";
 import {
-  INDUSTRY_BENCHMARKS,
-  INDUSTRY_ORDER,
+  PROCESS_BENCHMARKS,
+  PROCESS_ORDER,
   INPUT_RANGES,
-  type IndustryId,
-} from "@/lib/industryBenchmarks";
+  type ProcessId,
+} from "@/lib/processBenchmarks";
 import { useSettings } from "@/lib/settings-context";
 import {
   formatFte,
@@ -18,7 +18,7 @@ import {
   formatPercent,
   formatYenPerHour,
 } from "@/lib/format";
-import { IndustryCard } from "@/components/IndustryCard";
+import { ProcessCard } from "@/components/ProcessCard";
 import { KpiCard } from "@/components/KpiCard";
 import { CumulativeChart } from "@/components/CumulativeChart";
 import { CalculationBreakdown } from "@/components/CalculationBreakdown";
@@ -26,29 +26,29 @@ import { CalculationBreakdown } from "@/components/CalculationBreakdown";
 export default function HomePage() {
   const { settings, isCustomized } = useSettings();
 
-  const [industryId, setIndustryId] = useState<IndustryId | null>(null);
+  const [processId, setProcessId] = useState<ProcessId | null>(null);
   const [headcount, setHeadcount] = useState(3);
   const [casesPerDay, setCasesPerDay] = useState<number>(0);
   const [minutesPerCase, setMinutesPerCase] = useState<number>(0);
   const [customerName, setCustomerName] = useState("");
 
-  const selectIndustry = (id: IndustryId) => {
-    setIndustryId(id);
-    const s = settings.industry[id];
+  const selectProcess = (id: ProcessId) => {
+    setProcessId(id);
+    const s = settings.process[id];
     setCasesPerDay(s.casesPerDayDefault);
     setMinutesPerCase(s.minutesPerCase);
   };
 
-  const industrySettings = industryId ? settings.industry[industryId] : null;
-  const benchmark = industryId ? INDUSTRY_BENCHMARKS[industryId] : null;
+  const processSettings = processId ? settings.process[processId] : null;
+  const benchmark = processId ? PROCESS_BENCHMARKS[processId] : null;
 
   const result = useMemo(() => {
-    if (!industryId || !industrySettings) return null;
+    if (!processId || !processSettings) return null;
     return calculate({
       headcount,
       casesPerDay,
       minutesPerCase,
-      automationRate: industrySettings.automationRate,
+      automationRate: processSettings.automationRate,
       settings: {
         averageAnnualSalaryYen: settings.averageAnnualSalaryYen,
         annualWorkingHours: settings.annualWorkingHours,
@@ -58,10 +58,16 @@ export default function HomePage() {
         monthlyOperatingCostYen: settings.monthlyOperatingCostYen,
       },
     });
-  }, [industryId, industrySettings, headcount, casesPerDay, minutesPerCase, settings]);
+  }, [processId, processSettings, headcount, casesPerDay, minutesPerCase, settings]);
 
   const hourlyWageYen = settings.averageAnnualSalaryYen / settings.annualWorkingHours;
   const salaryMan = Math.round(settings.averageAnnualSalaryYen / 10_000);
+
+  const otherProcessLabels = processId
+    ? PROCESS_ORDER.filter((id) => id !== processId)
+        .slice(0, 2)
+        .map((id) => PROCESS_BENCHMARKS[id].label)
+    : [];
 
   return (
     <div className="mx-auto min-h-screen max-w-6xl px-4 py-6 md:px-8">
@@ -104,14 +110,14 @@ export default function HomePage() {
         {/* 入力パネル */}
         <section className="space-y-5">
           <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-            <h2 className="mb-3 text-sm font-semibold text-navy-700">STEP1 業界選択</h2>
+            <h2 className="mb-3 text-sm font-semibold text-navy-700">STEP1 業務選択</h2>
             <div className="grid grid-cols-2 gap-2">
-              {INDUSTRY_ORDER.map((id) => (
-                <IndustryCard
+              {PROCESS_ORDER.map((id) => (
+                <ProcessCard
                   key={id}
-                  benchmark={INDUSTRY_BENCHMARKS[id]}
-                  selected={industryId === id}
-                  onSelect={() => selectIndustry(id)}
+                  benchmark={PROCESS_BENCHMARKS[id]}
+                  selected={processId === id}
+                  onSelect={() => selectProcess(id)}
                 />
               ))}
             </div>
@@ -164,7 +170,7 @@ export default function HomePage() {
                     max={Math.max(500, casesPerDay)}
                     step={1}
                     value={casesPerDay}
-                    disabled={!industryId}
+                    disabled={!processId}
                     onChange={(e) => setCasesPerDay(Number(e.target.value))}
                     className="flex-1 accent-navy-700 disabled:opacity-40"
                   />
@@ -173,7 +179,7 @@ export default function HomePage() {
                     min={INPUT_RANGES.casesPerDay.min}
                     max={INPUT_RANGES.casesPerDay.max}
                     value={casesPerDay}
-                    disabled={!industryId}
+                    disabled={!processId}
                     onChange={(e) =>
                       setCasesPerDay(
                         Math.min(
@@ -186,8 +192,8 @@ export default function HomePage() {
                   />
                   <span className="text-sm text-ink-muted">件/日</span>
                 </div>
-                {!industryId ? (
-                  <p className="mt-1 text-[11px] text-ink-muted">※ 業界を選択すると入力できます</p>
+                {!processId ? (
+                  <p className="mt-1 text-[11px] text-ink-muted">※ 業務を選択すると入力できます</p>
                 ) : null}
               </div>
 
@@ -207,7 +213,7 @@ export default function HomePage() {
                     max={480}
                     step={1}
                     value={minutesPerCase}
-                    disabled={!industryId}
+                    disabled={!processId}
                     onChange={(e) => setMinutesPerCase(Number(e.target.value))}
                     className="flex-1 accent-navy-700 disabled:opacity-40"
                   />
@@ -216,7 +222,7 @@ export default function HomePage() {
                     min={INPUT_RANGES.minutesPerCase.min}
                     max={INPUT_RANGES.minutesPerCase.max}
                     value={minutesPerCase}
-                    disabled={!industryId}
+                    disabled={!processId}
                     onChange={(e) =>
                       setMinutesPerCase(
                         Math.min(
@@ -267,9 +273,9 @@ export default function HomePage() {
 
         {/* 結果パネル */}
         <section className="space-y-4">
-          {!industryId || !result ? (
+          {!processId || !result ? (
             <div className="flex h-64 items-center justify-center rounded-xl border border-dashed border-surface-border bg-white text-sm text-ink-muted">
-              業界を選択すると試算が始まります
+              業務を選択すると試算が始まります
             </div>
           ) : (
             <>
@@ -305,7 +311,14 @@ export default function HomePage() {
                     )}万円/月`}
                   />
                 ) : (
-                  <KpiCard label="ROI回収期間" value="回収不可" tone="warning" />
+                  <KpiCard
+                    label="ROI回収期間"
+                    value="拡張で黒字化"
+                    tone="info"
+                    sub={`あと約${formatManYen(
+                      settings.monthlyOperatingCostYen - result.monthlySavingsYen,
+                    )}万円/月の削減で黒字化`}
+                  />
                 )}
                 <KpiCard
                   label="削減工数"
@@ -315,8 +328,25 @@ export default function HomePage() {
               </div>
 
               {result.netMonthlySavingsYen <= 0 ? (
-                <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-4 text-sm text-amber-800">
-                  この業務単体では月額運用費を下回ります。対象業務の追加（請求・照合・更新管理など周辺業務の同時自動化）で削減余地を広げるのが一般的です。
+                <div className="rounded-xl border border-navy-200 bg-navy-50 p-4 text-sm text-navy-900 shadow-card">
+                  <h3 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-navy-800">
+                    <span aria-hidden>💡</span> ご提案
+                  </h3>
+                  <p>
+                    「{benchmark?.label}」単体では月間削減額が月額運用費（
+                    {formatManYen(settings.monthlyOperatingCostYen)}万円/月）に届きませんが、あと約
+                    {formatManYen(settings.monthlyOperatingCostYen - result.monthlySavingsYen)}
+                    万円/月の削減があれば黒字化します。Agentic RPAは複数の業務を組み合わせて導入できるため、次のような進め方がおすすめです。
+                  </p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5">
+                    <li>
+                      処理件数の多い業務
+                      {otherProcessLabels.length ? `（${otherProcessLabels.join("・")}など）` : ""}
+                      と組み合わせて導入し、システム全体で運用費をカバーする
+                    </li>
+                    <li>同じ業務の中でも自動化対象を広げる（確認・照合などの周辺工程も含める）</li>
+                    <li>まずは効果の大きい業務から導入し、本業務は次フェーズで追加する</li>
+                  </ul>
                 </div>
               ) : (
                 <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
@@ -334,7 +364,7 @@ export default function HomePage() {
                 casesPerDay={casesPerDay}
                 minutesPerCase={minutesPerCase}
                 workingDaysPerMonth={settings.workingDaysPerMonth}
-                automationRatePercent={(industrySettings?.automationRate ?? 0) * 100}
+                automationRatePercent={(processSettings?.automationRate ?? 0) * 100}
                 hourlyWageYen={result.hourlyWageYen}
                 salaryMan={salaryMan}
                 monthlyOperatingCostYen={settings.monthlyOperatingCostYen}
@@ -357,7 +387,7 @@ export default function HomePage() {
           )}
 
           <p className="text-[11px] leading-relaxed text-ink-faint">
-            本試算は入力値と業界平均値に基づく概算であり、削減効果を保証するものではありません。正式な削減余地は業務棚卸し（導入支援の第1フェーズ）にて算定します。入力値はブラウザ内のみで処理され、外部へ送信・保存されません。
+            本試算は入力値と業務平均値に基づく概算であり、削減効果を保証するものではありません。正式な削減余地は業務棚卸し（導入支援の第1フェーズ）にて算定します。入力値はブラウザ内のみで処理され、外部へ送信・保存されません。
           </p>
         </section>
       </div>

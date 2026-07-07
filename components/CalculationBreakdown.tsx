@@ -64,8 +64,9 @@ export function CalculationBreakdown({
       formula:
         result.roiMonths !== null
           ? `初期投資 ${formatManYen(initialInvestmentYen)}万円 ÷ 純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月`
-          : "純削減効果がマイナスのため算出できません",
-      resultText: result.roiMonths !== null ? `約${formatMonths(result.roiMonths)}ヶ月` : "回収不可",
+          : `この業務単体の純削減効果は ${formatManYen(result.netMonthlySavingsYen)}万円/月 のため、単独では算出できません`,
+      resultText: result.roiMonths !== null ? `約${formatMonths(result.roiMonths)}ヶ月` : "他業務と組み合わせを提案",
+      note: result.roiMonths === null ? "下の「ご提案」もご参照ください" : undefined,
       highlight: true,
     },
   ];

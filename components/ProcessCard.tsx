@@ -1,13 +1,13 @@
 "use client";
 
-import type { IndustryBenchmark } from "@/lib/industryBenchmarks";
+import type { ProcessBenchmark } from "@/lib/processBenchmarks";
 
-export function IndustryCard({
+export function ProcessCard({
   benchmark,
   selected,
   onSelect,
 }: {
-  benchmark: IndustryBenchmark;
+  benchmark: ProcessBenchmark;
   selected: boolean;
   onSelect: () => void;
 }) {
