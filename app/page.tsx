@@ -118,7 +118,7 @@ export default function HomePage() {
           </div>
 
           <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-            <h2 className="mb-3 text-sm font-semibold text-navy-700">STEP2 ヒアリング</h2>
+            <h2 className="mb-3 text-sm font-semibold text-navy-700">必要情報</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-ink">
@@ -190,47 +190,46 @@ export default function HomePage() {
                   <p className="mt-1 text-[11px] text-ink-muted">※ 業界を選択すると入力できます</p>
                 ) : null}
               </div>
-            </div>
-          </div>
 
-          <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-            <h2 className="mb-3 text-sm font-semibold text-navy-700">STEP3 処理時間の確認（任意）</h2>
-            <label className="block text-sm font-medium text-ink">
-              ③ 1件あたりの処理時間
-              {benchmark ? (
-                <span className="ml-1 font-normal text-ink-muted">
-                  （同業平均：{benchmark.minutesPerCase}分）
-                </span>
-              ) : null}
-            </label>
-            <div className="mt-2 flex items-center gap-3">
-              <input
-                type="range"
-                min={INPUT_RANGES.minutesPerCase.min}
-                max={480}
-                step={1}
-                value={minutesPerCase}
-                disabled={!industryId}
-                onChange={(e) => setMinutesPerCase(Number(e.target.value))}
-                className="flex-1 accent-navy-700 disabled:opacity-40"
-              />
-              <input
-                type="number"
-                min={INPUT_RANGES.minutesPerCase.min}
-                max={INPUT_RANGES.minutesPerCase.max}
-                value={minutesPerCase}
-                disabled={!industryId}
-                onChange={(e) =>
-                  setMinutesPerCase(
-                    Math.min(
-                      INPUT_RANGES.minutesPerCase.max,
-                      Math.max(INPUT_RANGES.minutesPerCase.min, Number(e.target.value) || 0),
-                    ),
-                  )
-                }
-                className="w-16 rounded-lg border border-surface-border px-2 py-1 text-right text-sm tabular-nums disabled:bg-surface-sunken"
-              />
-              <span className="text-sm text-ink-muted">分</span>
+              <div>
+                <label className="block text-sm font-medium text-ink">
+                  ③ 1件あたりの処理時間（任意）
+                  {benchmark ? (
+                    <span className="ml-1 font-normal text-ink-muted">
+                      （同業平均：{benchmark.minutesPerCase}分）
+                    </span>
+                  ) : null}
+                </label>
+                <div className="mt-2 flex items-center gap-3">
+                  <input
+                    type="range"
+                    min={INPUT_RANGES.minutesPerCase.min}
+                    max={480}
+                    step={1}
+                    value={minutesPerCase}
+                    disabled={!industryId}
+                    onChange={(e) => setMinutesPerCase(Number(e.target.value))}
+                    className="flex-1 accent-navy-700 disabled:opacity-40"
+                  />
+                  <input
+                    type="number"
+                    min={INPUT_RANGES.minutesPerCase.min}
+                    max={INPUT_RANGES.minutesPerCase.max}
+                    value={minutesPerCase}
+                    disabled={!industryId}
+                    onChange={(e) =>
+                      setMinutesPerCase(
+                        Math.min(
+                          INPUT_RANGES.minutesPerCase.max,
+                          Math.max(INPUT_RANGES.minutesPerCase.min, Number(e.target.value) || 0),
+                        ),
+                      )
+                    }
+                    className="w-16 rounded-lg border border-surface-border px-2 py-1 text-right text-sm tabular-nums disabled:bg-surface-sunken"
+                  />
+                  <span className="text-sm text-ink-muted">分</span>
+                </div>
+              </div>
             </div>
           </div>
 
