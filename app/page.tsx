@@ -24,6 +24,9 @@ import { CumulativeChart } from "@/components/CumulativeChart";
 import { CalculationBreakdown } from "@/components/CalculationBreakdown";
 import { Pill } from "@/components/Pill";
 
+/** これを超えるROI回収期間は、単体提案ではなく他業務とのバンドル提案に切り替える */
+const ROI_BUNDLE_THRESHOLD_MONTHS = 12;
+
 export default function HomePage() {
   const { settings, isCustomized } = useSettings();
 
@@ -69,6 +72,9 @@ export default function HomePage() {
         .slice(0, 2)
         .map((id) => PROCESS_BENCHMARKS[id].label)
     : [];
+
+  const needsBundleProposal =
+    !!result && result.roiMonths !== null && result.roiMonths > ROI_BUNDLE_THRESHOLD_MONTHS;
 
   return (
     <div className="mx-auto min-h-screen max-w-6xl px-4 py-6 md:px-8">
@@ -316,16 +322,7 @@ export default function HomePage() {
                   value={`${formatManYen(result.netMonthlySavingsYen)}万円/月`}
                   sub={`削減額 − 月額運用費 ${formatManYen(settings.monthlyOperatingCostYen)}万円`}
                 />
-                {result.roiMonths !== null ? (
-                  <KpiCard
-                    label="ROI回収期間"
-                    value={`約${formatMonths(result.roiMonths)}ヶ月`}
-                    sub={[
-                      `初期投資 ${formatManYen(settings.initialInvestmentYen)}万円 ÷`,
-                      `純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月`,
-                    ]}
-                  />
-                ) : (
+                {result.roiMonths === null ? (
                   <KpiCard
                     label="ROI回収期間"
                     value="拡張で黒字化"
@@ -333,6 +330,25 @@ export default function HomePage() {
                     sub={`あと約${formatManYen(
                       settings.monthlyOperatingCostYen - result.monthlySavingsYen,
                     )}万円/月の削減で黒字化`}
+                  />
+                ) : needsBundleProposal ? (
+                  <KpiCard
+                    label="ROI回収期間"
+                    value="バンドル提案推奨"
+                    tone="info"
+                    sub={[
+                      `単体では約${formatMonths(result.roiMonths)}ヶ月`,
+                      "他業務との組み合わせで短縮を提案",
+                    ]}
+                  />
+                ) : (
+                  <KpiCard
+                    label="ROI回収期間"
+                    value={`約${formatMonths(result.roiMonths)}ヶ月`}
+                    sub={[
+                      `初期投資 ${formatManYen(settings.initialInvestmentYen)}万円 ÷`,
+                      `純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月`,
+                    ]}
                   />
                 )}
                 <KpiCard
@@ -364,15 +380,37 @@ export default function HomePage() {
                   </ul>
                 </div>
               ) : (
-                <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
-                  <h3 className="mb-3 text-base font-semibold text-navy-700">
-                    累積純削減額の推移（24ヶ月・初期投資控除後）
-                  </h3>
-                  <CumulativeChart
-                    cumulativeByMonth={result.cumulativeByMonth}
-                    breakEvenMonth={result.breakEvenMonth}
-                  />
-                </div>
+                <>
+                  {needsBundleProposal ? (
+                    <div className="rounded-xl border border-navy-200 bg-navy-50 p-4 text-base text-navy-900 shadow-card">
+                      <h3 className="mb-2 flex items-center gap-1.5 text-base font-semibold text-navy-800">
+                        <span aria-hidden>💡</span> ご提案
+                      </h3>
+                      <p>
+                        「{benchmark?.label}」単体でのROI回収期間は約{formatMonths(result.roiMonths ?? 0)}
+                        ヶ月です。1年以内の投資回収を目指す場合は、他の業務と組み合わせたバンドル導入がおすすめです。初期投資は据え置きのまま削減額を積み増せるため、回収期間を大きく短縮できます。
+                      </p>
+                      <ul className="mt-2 list-disc space-y-1 pl-5">
+                        <li>
+                          処理件数の多い業務
+                          {otherProcessLabels.length ? `（${otherProcessLabels.join("・")}など）` : ""}
+                          と組み合わせて導入し、複数業務分の削減額で初期投資を早期回収する
+                        </li>
+                        <li>同じ業務の中でも自動化対象を広げる（確認・照合などの周辺工程も含める）</li>
+                        <li>まずは回収期間の短い業務から導入し、本業務は次フェーズで追加する</li>
+                      </ul>
+                    </div>
+                  ) : null}
+                  <div className="rounded-xl border border-surface-border bg-white p-4 shadow-card">
+                    <h3 className="mb-3 text-base font-semibold text-navy-700">
+                      累積純削減額の推移（24ヶ月・初期投資控除後）
+                    </h3>
+                    <CumulativeChart
+                      cumulativeByMonth={result.cumulativeByMonth}
+                      breakEvenMonth={result.breakEvenMonth}
+                    />
+                  </div>
+                </>
               )}
 
               <CalculationBreakdown
