@@ -249,8 +249,6 @@ export default function HomePage() {
               </Pill>
               <Pill>自動化率 {benchmark ? `${formatPercent(benchmark.automationRate * 100)}%` : "—"}</Pill>
               <Pill>稼働 {settings.workingDaysPerMonth}日/月</Pill>
-              <Pill>初期投資 {formatManYen(settings.initialInvestmentYen)}万円</Pill>
-              <Pill>月額 {formatManYen(settings.monthlyOperatingCostYen)}万円</Pill>
             </div>
           </div>
 
@@ -297,16 +295,14 @@ export default function HomePage() {
                 <KpiCard
                   label="純削減効果"
                   value={`${formatManYen(result.netMonthlySavingsYen)}万円/月`}
-                  sub={`削減額 − 月額運用費 ${formatManYen(settings.monthlyOperatingCostYen)}万円`}
+                  sub="AIエージェント運用費差引後の実質効果"
                 />
                 {result.roiMonths === null ? (
                   <KpiCard
                     label="ROI回収期間"
                     value="拡張で黒字化"
                     tone="info"
-                    sub={`あと約${formatManYen(
-                      settings.monthlyOperatingCostYen - result.monthlySavingsYen,
-                    )}万円/月の削減で黒字化`}
+                    sub="他業務との組み合わせで黒字化を検討"
                   />
                 ) : needsBundleProposal ? (
                   <KpiCard
@@ -322,10 +318,7 @@ export default function HomePage() {
                   <KpiCard
                     label="ROI回収期間"
                     value={`約${formatMonths(result.roiMonths)}ヶ月`}
-                    sub={[
-                      `初期投資 ${formatManYen(settings.initialInvestmentYen)}万円 ÷`,
-                      `純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月`,
-                    ]}
+                    sub="純削減効果をもとに算出した投資回収期間"
                   />
                 )}
                 <KpiCard
@@ -341,10 +334,8 @@ export default function HomePage() {
                     <span aria-hidden>💡</span> ご提案
                   </h3>
                   <p>
-                    「{benchmark?.label}」単体では月間削減額が月額運用費（
-                    {formatManYen(settings.monthlyOperatingCostYen)}万円/月）に届きませんが、あと約
-                    {formatManYen(settings.monthlyOperatingCostYen - result.monthlySavingsYen)}
-                    万円/月の削減があれば黒字化します。Agentic RPAは複数の業務を組み合わせて導入できるため、次のような進め方がおすすめです。
+                    「{benchmark?.label}」単体では削減効果がAIエージェントの運用コストを下回るため、単独導入のご提案には向きません。Agentic
+                    RPAは複数の業務を組み合わせて導入できるため、次のような進め方がおすすめです。
                   </p>
                   <ul className="mt-2 list-disc space-y-1 pl-5">
                     <li>
@@ -397,8 +388,6 @@ export default function HomePage() {
                 automationRatePercent={(processSettings?.automationRate ?? 0) * 100}
                 hourlyWageYen={result.hourlyWageYen}
                 salaryMan={salaryMan}
-                monthlyOperatingCostYen={settings.monthlyOperatingCostYen}
-                initialInvestmentYen={settings.initialInvestmentYen}
                 result={result}
               />
 

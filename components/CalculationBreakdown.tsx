@@ -12,7 +12,10 @@ interface Part {
 
 interface Step {
   label: string;
-  parts: Part[];
+  /** 数式を数値チップで表示する場合 */
+  parts?: Part[];
+  /** 数式の代わりに説明文だけを表示する場合 (自社の原価情報を含む数式は非表示にするため) */
+  formulaText?: string;
   resultText: string;
   note?: string;
   highlight?: boolean;
@@ -26,8 +29,6 @@ export function CalculationBreakdown({
   automationRatePercent,
   hourlyWageYen,
   salaryMan,
-  monthlyOperatingCostYen,
-  initialInvestmentYen,
   result,
 }: {
   casesPerDay: number;
@@ -36,8 +37,6 @@ export function CalculationBreakdown({
   automationRatePercent: number;
   hourlyWageYen: number;
   salaryMan: number;
-  monthlyOperatingCostYen: number;
-  initialInvestmentYen: number;
   result: CalcResult;
 }) {
   const steps: Step[] = [
@@ -70,20 +69,16 @@ export function CalculationBreakdown({
     },
     {
       label: "④ 純削減効果",
-      parts: [{ text: `${formatManYen(result.monthlySavingsYen)}万円` }, { text: "−", op: true }, { text: `運用費 ${formatManYen(monthlyOperatingCostYen)}万円` }],
+      formulaText: "AIエージェントの運用費を差し引いた実質効果",
       resultText: `${formatManYen(result.netMonthlySavingsYen)}万円/月`,
-      note: "AIエージェント導入後の月額運用費を差し引いた、手元に残る削減効果です",
+      note: "運用費の詳細は個別のお見積りにてご案内します",
     },
     {
       label: "⑤ ROI回収期間",
-      parts:
+      formulaText:
         result.roiMonths !== null
-          ? [
-              { text: `初期投資 ${formatManYen(initialInvestmentYen)}万円` },
-              { text: "÷", op: true },
-              { text: `純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月` },
-            ]
-          : [{ text: `純削減効果 ${formatManYen(result.netMonthlySavingsYen)}万円/月（単独では算出不可）` }],
+          ? "純削減効果をもとに算出した投資回収期間"
+          : "純削減効果がマイナスのため単独では算出できません",
       resultText: result.roiMonths !== null ? `約${formatMonths(result.roiMonths)}ヶ月` : "他業務と組み合わせを提案",
       note: result.roiMonths === null ? "下の「ご提案」もご参照ください" : undefined,
       highlight: true,
@@ -113,15 +108,19 @@ export function CalculationBreakdown({
             <div className="min-w-0 flex-1 pt-1">
               <div className="text-sm font-medium text-ink-muted">{step.label}</div>
               <div className="mt-2 flex flex-wrap items-center gap-2">
-                {step.parts.map((part, j) =>
-                  part.op ? (
-                    <span key={j} className="text-base font-medium text-ink-faint" aria-hidden>
-                      {part.text}
-                    </span>
-                  ) : (
-                    <Pill key={j}>{part.text}</Pill>
-                  ),
-                )}
+                {step.parts
+                  ? step.parts.map((part, j) =>
+                      part.op ? (
+                        <span key={j} className="text-base font-medium text-ink-faint" aria-hidden>
+                          {part.text}
+                        </span>
+                      ) : (
+                        <Pill key={j}>{part.text}</Pill>
+                      ),
+                    )
+                  : step.formulaText && (
+                      <span className="text-sm text-ink-faint">{step.formulaText}</span>
+                    )}
                 <span className="text-base text-ink-faint" aria-hidden>
                   →
                 </span>
