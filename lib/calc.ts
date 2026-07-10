@@ -120,3 +120,119 @@ export function calculate(input: CalcInput): CalcResult {
     breakEvenMonth,
   };
 }
+
+/**
+ * 複数業務の組み合わせ試算。
+ *
+ * 設計上のキモ: 初期投資 (C0) と月額運用費 (Cm) は「Agentic RPA システム全体で1式」であり、
+ * 対象業務を増やしても増えない。したがって各業務の削減額を積み上げつつ固定費は据え置くことで、
+ * 組み合わせるほど純削減効果とROIが改善する ＝ バンドル導入の価値を数値で示せる。
+ */
+
+export interface ProcessCalcInput {
+  id: string;
+  label: string;
+  /** N: 担当人数 (人) */
+  headcount: number;
+  /** Q: 処理件数 (件/日) */
+  casesPerDay: number;
+  /** T: 1件あたり処理時間 (分/件) */
+  minutesPerCase: number;
+  /** r: 自動化率 (0-1) */
+  automationRate: number;
+}
+
+/** 業務ごとの削減効果 (運用費・初期投資は含まないグロス値) */
+export interface ProcessContribution {
+  id: string;
+  label: string;
+  automationRate: number;
+  /** 月間対象工数 (時間/月) */
+  monthlyHours: number;
+  /** 自動化可能工数 (時間/月) */
+  automatedHours: number;
+  /** 月間削減額 (円/月、グロス) */
+  monthlySavingsYen: number;
+  /** 人数換算 (人分) */
+  fteSaved: number;
+}
+
+export interface CombinedResult {
+  /** W: 時給換算人件費 (円/時) */
+  hourlyWageYen: number;
+  /** 業務別の削減効果 (入力順) */
+  contributions: ProcessContribution[];
+  /** 合計月間削減額 (円/月、運用費差引前) = Σ各業務 */
+  monthlySavingsYen: number;
+  /** 合計年間削減額 (円/年) */
+  annualSavingsYen: number;
+  /** 合計自動化可能工数 (時間/月) */
+  automatedHours: number;
+  /** 合計人数換算 (人分) */
+  fteSaved: number;
+  /** 純削減効果 (円/月) = 合計削減額 − 運用費 (システム全体で1式) */
+  netMonthlySavingsYen: number;
+  /** ROI回収期間 (月)。純削減効果 ≤ 0 のときは null */
+  roiMonths: number | null;
+  /** 累積純削減額 (初期投資控除後、円) */
+  cumulativeByMonth: number[];
+  /** 黒字転換月。24ヶ月以内に黒字化しない場合は null */
+  breakEvenMonth: number | null;
+}
+
+export function calculateCombined(
+  processes: ProcessCalcInput[],
+  settings: CalcSettings,
+): CombinedResult {
+  const { initialInvestmentYen: C0, monthlyOperatingCostYen: Cm } = settings;
+  const hourlyWageYen = settings.averageAnnualSalaryYen / settings.annualWorkingHours;
+
+  // 各業務は運用費・初期投資ゼロで単体計算し、グロスの削減効果だけを取り出す。
+  // 固定費 (C0 / Cm) はシステム全体で1式のため、合算後にまとめて差し引く。
+  const contributions: ProcessContribution[] = processes.map((p) => {
+    const per = calculate({
+      headcount: p.headcount,
+      casesPerDay: p.casesPerDay,
+      minutesPerCase: p.minutesPerCase,
+      automationRate: p.automationRate,
+      settings: { ...settings, initialInvestmentYen: 0, monthlyOperatingCostYen: 0 },
+    });
+    return {
+      id: p.id,
+      label: p.label,
+      automationRate: p.automationRate,
+      monthlyHours: per.monthlyHours,
+      automatedHours: per.automatedHours,
+      monthlySavingsYen: per.monthlySavingsYen,
+      fteSaved: per.fteSaved,
+    };
+  });
+
+  const monthlySavingsYen = contributions.reduce((s, c) => s + c.monthlySavingsYen, 0);
+  const automatedHours = contributions.reduce((s, c) => s + c.automatedHours, 0);
+  const fteSaved = contributions.reduce((s, c) => s + c.fteSaved, 0);
+  const annualSavingsYen = monthlySavingsYen * 12;
+  const netMonthlySavingsYen = monthlySavingsYen - Cm;
+  const roiMonths = netMonthlySavingsYen > 0 ? C0 / netMonthlySavingsYen : null;
+
+  const cumulativeByMonth: number[] = [];
+  let breakEvenMonth: number | null = null;
+  for (let n = 1; n <= CUMULATIVE_MONTHS; n++) {
+    const cum = netMonthlySavingsYen * n - C0;
+    cumulativeByMonth.push(cum);
+    if (breakEvenMonth === null && cum >= 0) breakEvenMonth = n;
+  }
+
+  return {
+    hourlyWageYen,
+    contributions,
+    monthlySavingsYen,
+    annualSavingsYen,
+    automatedHours,
+    fteSaved,
+    netMonthlySavingsYen,
+    roiMonths,
+    cumulativeByMonth,
+    breakEvenMonth,
+  };
+}
